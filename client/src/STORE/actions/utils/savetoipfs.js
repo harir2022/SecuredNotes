@@ -4,25 +4,26 @@ import axios from "axios";
 export const savetoipfs = async (note)=>{         
           
           // Pin the JSON object to IPFS using the Pinata API
-      const res =   await   axios.post('https://api.pinata.cloud/pinning/pinJSONToIPFS', note, {
-          headers: {
-               'Content-Type': 'application/json',
-               'pinata_api_key': 'f36a3cd84e3c8656463b',
-               'pinata_secret_api_key': 'fdf71f6ffa996f75a561d2c67f81d63a86fee1f3ddc9aa55a9c13326258b2330'
-          }
+          const res =   await   axios.post('https://api.pinata.cloud/pinning/pinJSONToIPFS', note, {
+            headers: {
+              'Content-Type': 'application/json',
+              'pinata_api_key': process.env.API_KEY,
+              'pinata_secret_api_key': process.env.SECRET_KEY
+            }
           }).then((response) => {
-          // console.log('JSON object pinned to IPFS:', response.data.IpfsHash);
+            // console.log('JSON object pinned to IPFS:', response.data.IpfsHash);
                     return response.data.IpfsHash;
           }).catch((error) => { 
-          console.error('Error pinning JSON object to IPFS:', error);
+            console.error('Error pinning JSON object to IPFS:', error);
           });
           console.log(res)
           return res;
+          
+        }
 
-}
 
-
-export const getfromipfs = async (id)=>{         
+        export const getfromipfs = async (id)=>{         
+          
           
   // const gateway =`https://gateway.pinata.cloud/ipfs/${id}`;
   // const gateway =`https://ipfs.io/ipfs/${id}`;

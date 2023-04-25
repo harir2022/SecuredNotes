@@ -17,7 +17,7 @@ import { IoColorPaletteOutline } from 'react-icons/io5';
 import { BiArchiveIn, BiArchiveOut, BiEdit } from 'react-icons/bi';
 import { AiOutlinePlusSquare, AiOutlineMinusSquare } from 'react-icons/ai';
 import { useDispatch } from 'react-redux';
-import { handleArchive, handleBgColor, handleCheckList, handleDelete, handlePin } from '../../STORE/actions/notesActions';
+import { handleArchive, handleBgColor, handleCheckList, handleDelete, handleEdit, handlePin } from '../../STORE/actions/notesActions';
 
 // Context
 // import { NoteActionContext } from '../../context/NoteContext';
@@ -42,12 +42,13 @@ const Note = (props) => {
 
   // Archieve
   const Archive = () => {
-    dispatch(handleArchive(id))
+    dispatch(handleEdit(id, title, note, pin,!archiev, bgColor, checkList));
+    // dispatch(handleArchive(id))
   };
 
   // Pin
   const Pin = () => {
-    dispatch( handlePin(id))
+    dispatch(handleEdit(id, title, note, !pin,archiev, bgColor, checkList));
   };
 
   // Delete
@@ -57,11 +58,11 @@ const Note = (props) => {
 
   // Background Color
   const BackgroundColor = (color) => {
-    dispatch( handleBgColor(id, color))
+    dispatch(handleEdit(id, title, note, pin,archiev, color, checkList));
   };
 
   const CheckList = () => {
-    dispatch( handleCheckList(id))
+    dispatch(handleCheckList(id));
   };
 
   return (
@@ -105,7 +106,7 @@ const Note = (props) => {
                 <BiArchiveIn className='note-icon' />
               )}
             </div>
-            <div>
+            {/* <div>
               <IoColorPaletteOutline
                 onClick={() => setShowPicker(!showPicker)}
                 className='note-icon'
@@ -121,7 +122,7 @@ const Note = (props) => {
                   height={100}
                 />
               </div>
-            </div>
+            </div> */}
             {checkList ? (
               <div onClick={CheckList}>
                 <AiOutlineMinusSquare className='note-icon' />

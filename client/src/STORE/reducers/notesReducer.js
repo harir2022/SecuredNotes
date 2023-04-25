@@ -11,7 +11,7 @@ import {
     NOTE_DETAILS_FAIL,NOTE_DETAILS_REQUEST,NOTE_DETAILS_SUCCESS,
     DELETE_NOTE_REQUEST,DELETE_NOTE_SUCCESS,
     NEW_SAVE_NOTES_FAIL,NEW_SAVE_NOTES_REQUEST,NEW_SAVE_NOTES_SUCCESS,
-    RESTORE_NOTE,CLEAR_ERRORS,CLEAR_NOTES,HANDLE_ARCHIVE,HANDLE_BG_COLOR,HANDLE_CHECK_LIST,HANDLE_DELETE,HANDLE_EDIT,HANDLE_PIN, ALL_BIN_FAIL, ALL_BIN_REQUEST, ALL_BIN_SUCCESS
+    RESTORE_NOTE,CLEAR_ERRORS,CLEAR_NOTES,HANDLE_ARCHIVE,HANDLE_BG_COLOR,HANDLE_CHECK_LIST,HANDLE_DELETE,HANDLE_EDIT,HANDLE_PIN, ALL_BIN_FAIL, ALL_BIN_REQUEST, ALL_BIN_SUCCESS, SEARCH_NOTES_REQUEST, SEARCH_NOTES_SUCCESS, SEARCH_NOTES_FAIL
   } from '../constants/NotesConstants'
   
 
@@ -151,7 +151,7 @@ export const getDeletedNotesReducer = (state = { notes: [] }, action) => {
 
 
 // save 
-export const newNotesReducer = (state = { note: {} }, action) => {
+export const newNotesReducer = (state = { note: {},loading:false }, action) => {
   switch (action.type) {
 
       case NEW_SAVE_NOTES_REQUEST:
@@ -211,6 +211,45 @@ export const deleteNotesReducer = (state = {notes:{}},action)=>{
                 return state;
     }
 }
+
+
+export const searchNotesReducer =(state ={notes:{}} ,action)=>{
+    switch (action.type) {
+        case SEARCH_NOTES_REQUEST:        
+            return {
+                loading: true,
+                searchedNotes: []
+            }
+            
+  
+        case SEARCH_NOTES_SUCCESS:
+            return {
+                loading: false,
+                searchedNotes: action.payload,
+                // notesCount: action.payload.length,
+               //  resPerPage: action.payload.resPerPage,
+               //  filterednotesCount: action.payload.filterednotesCount
+            }
+  
+      
+        case SEARCH_NOTES_FAIL:
+        
+            return {
+                loading: false,
+                error: action.payload
+            }
+  
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                error: null
+            }
+  
+        default:
+            return state;
+    }
+  }
+
 
 
 //   export const noteReducer = (state = initialState, action) => {

@@ -1,7 +1,7 @@
 import { legacy_createStore as createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import {  deleteNotesReducer, getDeletedNotesReducer, newNotesReducer, noteDetailsReducer, notesReducer } from './reducers/notesReducer';
+import {  deleteNotesReducer, getDeletedNotesReducer, newNotesReducer, noteDetailsReducer, notesReducer, searchNotesReducer } from './reducers/notesReducer';
 import { EthContext, reducer as red } from '../contexts/EthContext';
 import { authReducer } from './reducers/userReducer';
 
@@ -11,8 +11,9 @@ const reducer = combineReducers({
    notes:notesReducer,//get all note;
    noteDetail:noteDetailsReducer,
    newNote:newNotesReducer,
-   bin:getDeletedNotesReducer,
-   auth:authReducer//contract , acc
+   bin:getDeletedNotesReducer,//delte notes
+   auth:authReducer,//contract , acc
+   searchedNotes:searchNotesReducer,
 })
 
 

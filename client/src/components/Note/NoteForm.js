@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 // Styled Components
 import { CirclePicker } from 'react-color';
@@ -13,8 +13,9 @@ import { IoColorPaletteOutline } from 'react-icons/io5';
 
 // Unique uid generator
 import { v4 as uuidv4 } from 'uuid';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addNote } from '../../STORE/actions/notesActions';
+import Loading from '../Loader/Loading';
 
 // Context
 // import { NoteActionContext } from '../../context/NoteContext';
@@ -34,6 +35,11 @@ const NoteForm = () => {
   const [showPicker, setShowPicker] = useState(false);
   const [addChecklist, setAddChecklist] = useState(false);
 
+
+  const {loading}= useSelector(s=>s.newNote)
+
+if(loading)
+return <><Loading/></>
 
   // Add Note Function
   const Submit = () => {

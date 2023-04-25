@@ -2,23 +2,46 @@
 import {deletefilefromipfs, getfromipfs, savetoipfs} from './utils/savetoipfs'
 import {
      ADD_NOTE,
-     ARCHIVE_NOTE,
-     PIN_NOTE,
-     SET_SEARCHED_NOTES,
-     DELETE_NOTE,
-     EDIT_NOTE,
-     CHANGE_NOTE_COLOR,
-     TOGGLE_CHECKLIST,
-     RESTORE_NOTE,CLEAR_ERRORS,CLEAR_NOTES,
-     ALL_NOTES_FAIL,ALL_NOTES_REQUEST,ALL_NOTES_SUCCESS,
+    ALL_NOTES_FAIL,ALL_NOTES_REQUEST,ALL_NOTES_SUCCESS,
      NOTE_DETAILS_FAIL,NOTE_DETAILS_REQUEST,NOTE_DETAILS_SUCCESS,
-     HANDLE_ARCHIVE,HANDLE_BG_COLOR,HANDLE_CHECK_LIST,HANDLE_DELETE,HANDLE_EDIT,HANDLE_PIN, NEW_SAVE_NOTES_FAIL, NEW_SAVE_NOTES_SUCCESS, DELETE_NOTE_REQUEST, DELETE_NOTE_SUCCESS
+     HANDLE_ARCHIVE,HANDLE_CHECK_LIST,NEW_SAVE_NOTES_FAIL, NEW_SAVE_NOTES_SUCCESS, DELETE_NOTE_REQUEST, DELETE_NOTE_SUCCESS, SEARCH_NOTES_REQUEST, SEARCH_NOTES_FAIL, SEARCH_NOTES_SUCCESS, NEW_SAVE_NOTES_REQUEST
    } from '../constants/NotesConstants'
 
    import store from '../store'
 import { ALL_BIN_SUCCESS } from '../constants/NotesConstants';
 import { ALL_BIN_REQUEST } from '../constants/NotesConstants';
 import { ALL_BIN_FAIL } from '../constants/NotesConstants';
+
+
+//time converted;
+function timeSince(date) {
+     var seconds = Math.floor((new Date() - date) / 1000);
+     var interval = Math.floor(seconds / 31536000);
+   
+     if (interval > 1) {
+       return interval + " years";
+     }
+     interval = Math.floor(seconds / 2592000);
+     if (interval > 1) {
+       return interval + " months";
+     }
+     interval = Math.floor(seconds / 86400);
+     if (interval > 1) {
+       return interval + " days";
+     }
+     interval = Math.floor(seconds / 3600);
+     if (interval > 1) {
+       return interval + " hours";
+     }
+     interval = Math.floor(seconds / 60);
+     if (interval >= 1) {
+       return interval + " minutes";
+     }
+     return Math.floor(seconds) + " seconds";
+   }
+   
+
+
 
    //helps in geting notes;
 const getAllNotesFromBlo= async (acc,noteC)=>{
@@ -30,14 +53,15 @@ const getAllNotesFromBlo= async (acc,noteC)=>{
     const bin=[]
     for(var i=0;i<notesCount;i++){
          const ress = await noteC.methods.getNoteByIndex(i).call({from:acc});
-         console.log("from block:");
-         console.log(ress )
+     //     console.log("from block:");
+     //     console.log(ress);
+         
          if(ress[3]){// deleted notes in blockchain are named as true;
                     const content =await getfromipfs(ress[1]);
                     const note={
                          filename:ress[0],
                          content:content,
-                         time:parseInt(ress[2]._hex,16),
+                         time:timeSince(new Date((ress[2]*1000))),
                     }        
                     if(ress[0]=="") continue;
                     bin.push(note);           
@@ -48,15 +72,16 @@ const getAllNotesFromBlo= async (acc,noteC)=>{
          const note={
               filename:ress[0],
               content:content,
-              time:parseInt(ress[2]._hex,16),
+              time:timeSince(new Date((ress[2]*1000))),
          }        
+         
          if(ress[0]=="") continue;
          notes.push(note);             
          }
            
     }
     // console.log(notesCount);
-    // console.log(notes);
+//     console.log(notes);
     return {notes,bin};
 }
 
@@ -64,6 +89,9 @@ const getAllNotesFromBlo= async (acc,noteC)=>{
 
 export const addNote = (note) =>async(dispatch)=>{
     try {
+     dispatch({
+          type:NEW_SAVE_NOTES_REQUEST
+     })
       const {user}=store.getState().auth;
       if(user && user!=undefined){             
                
@@ -107,7 +135,7 @@ export const addNote = (note) =>async(dispatch)=>{
            });
            
         dispatch({
-             type: ADD_NOTE,
+             type: NEW_SAVE_NOTES_SUCCESS,
              payload: note
         })
    }
@@ -117,6 +145,9 @@ export const addNote = (note) =>async(dispatch)=>{
 
     } catch (error) {
           console.log(error);
+          dispatch({
+               type:NEW_SAVE_NOTES_FAIL
+          })
     }
    
 }
@@ -145,23 +176,23 @@ export const getNotes =( )=> async (dispatch)=>{
                  notes=onotes;
                  bin=obin;
                  
-                 var notec=[];
-                 var binc=[]
-                 for(var note of notes){
-                      notec.push(note.content);
-               }
-                 for(var note of bin){
-                      binc.push(note.content);
-                 }
-                 console.log(notec)
-                 console.log(binc)
+               //   var notec=[];
+               //   var binc=[]
+               //   for(var note of notes){
+               //        notec.push(note.content);
+               // }
+               //   for(var note of bin){
+               //        binc.push(note.content);
+               //   }
+               //   console.log(notec)
+               //   console.log(binc)
                  dispatch({
                       type:ALL_NOTES_SUCCESS,
-                      payload:notec       
+                      payload:notes    
                  })
                  dispatch({
                       type:ALL_BIN_SUCCESS,
-                      payload:binc  
+                      payload:bin  
                  })
                  
             }          
@@ -226,25 +257,25 @@ export const getNotesDetails =( id )=> async (dispatch)=>{
 
 
    
-   export const handleArchive = (id) => ({
-     type: HANDLE_ARCHIVE,
-     payload: id,
-   });
+//    export const handleArchive = (id) => ({
+//      type: HANDLE_ARCHIVE,
+//      payload: id,
+//    });
    
-   export const handlePin = (id) => ({
-     type: HANDLE_PIN,
-     payload: id,
-   });
+//    export const handlePin = (id) => ({
+//      type: HANDLE_PIN,
+//      payload: id,
+//    });
    
-   export const handleBgColor = (id, color) => ({
-     type: HANDLE_BG_COLOR,
-     payload: { id, color },
-   });
+//    export const handleBgColor = (id, color) => ({
+//      type: HANDLE_BG_COLOR,
+//      payload: { id, color },
+//    });
    
-   export const handleCheckList = (id) => ({
-     type: HANDLE_CHECK_LIST,
-     payload: id,
-   });
+//    export const handleCheckList = (id) => ({
+//      type: HANDLE_CHECK_LIST,
+//      payload: id,
+//    });
    
    export const handleDelete = (id) =>async(dispatch)=>{
 
@@ -302,6 +333,10 @@ export const getNotesDetails =( id )=> async (dispatch)=>{
    
    export const handleEdit = (id, title, note, pin, archive, color, addChecklist) => async(dispatch)=>{
 
+     dispatch({
+          type:NEW_SAVE_NOTES_REQUEST
+     })
+
       const newnote={
         id: id,
         title:title,
@@ -358,7 +393,7 @@ export const getNotesDetails =( id )=> async (dispatch)=>{
            });
            
         dispatch({
-             type: ADD_NOTE,
+             type: NEW_SAVE_NOTES_SUCCESS,
              payload: note
         })
    }
@@ -369,17 +404,32 @@ export const getNotesDetails =( id )=> async (dispatch)=>{
     } catch (error) {
           console.log(error);
         }
-        // dispatch({
-        //   type: NEW_SAVE_NOTES_FAIL,
+        dispatch({
+          type: NEW_SAVE_NOTES_FAIL,
         //   payload: receipt
-        // })
+        })
 
 
     }   
 
    
-   export const setSearchedNotes = (notes) => ({
-     type: SET_SEARCHED_NOTES,
-     payload: notes,
-   });
-   
+   export const setSearchedNotes = (notes) =>async(dispatch)=> {
+     try {
+          dispatch({
+               type:SEARCH_NOTES_REQUEST,
+          });                
+          dispatch({
+                    type:SEARCH_NOTES_SUCCESS,
+                    payload:notes
+          })
+                        
+               
+          } catch (error) {
+               console.log(error)
+           
+               dispatch({
+                    type:SEARCH_NOTES_FAIL,
+                    payload:error
+               })
+          }
+   }

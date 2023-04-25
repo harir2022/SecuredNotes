@@ -38,7 +38,10 @@ const EditForm = (props) => {
   const [showPicker, setShowPicker] = useState(false);
   const [noteText, setNoteText] = useState(noteTxt);
   const [addChecklist, setAddChecklist] = useState(props.checkList);
-  // const [checkArray, setCheckArray] = useState([]);
+  const [time,setTime] = useState(props.lastupdated);
+
+
+  
 
   // Edit Function
   
@@ -72,18 +75,21 @@ const EditForm = (props) => {
       setModalShow(false);
     }
   };
+  // console.log(time)
 
   const CheckInput = () => {};
-
+  
+  
   return (
     <div className='edit-note-form' style={{ background: color }}>
       <div
         style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px' }}
-      >
+        >
         <RiCloseFill
           onClick={() => setModalShow(false)}
           className='note-icon'
-        />
+          />
+     
       </div>
       <input
         style={{ background: color }}
@@ -116,7 +122,9 @@ const EditForm = (props) => {
       )}
 
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      
         <div className='icons-container'>
+        <div className='submit'>Edited  <b>{ time +' ago '}</b></div>
           <div onClick={() => setPin(!pin)}>
             {pin ? (
               <RiPushpin2Fill className='note-icon' />
@@ -157,9 +165,8 @@ const EditForm = (props) => {
             </div>
           </div>
         </div>
-
         <button className='submit' onClick={Edit}>
-          Update Note
+          Update Note          
         </button>
       </div>
     </div>
