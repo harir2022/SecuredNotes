@@ -26,10 +26,6 @@ const Header = ({setDarkmode,curtheme}) => {
 
   const {user}= useSelector(state=>state.auth)
 
-  if(!user){
-    return <Home/>
-  }
-
   return (
     <div>
       <div>

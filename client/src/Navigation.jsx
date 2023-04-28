@@ -50,12 +50,12 @@ const Navigation = () => {
     dispatch(login())
     // dispatch(getNotes())
     setIsDarkTheme(localStorage.getItem('darkmode'));
-    // console.log(isDarkTheme)
-  }, [user,dispatch])
+    console.log(isDarkTheme)
+    }, [])
 
-  if(!user){
-    return <Home/>
-  }
+    if(!user){
+      return <Home/>
+    }
 
 
   return (
